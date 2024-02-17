@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../config/firebase";
-
+import { useNavigate, Navigate } from "react-router-dom";
+import { AuthContext } from "../AuthService";
 const Login = () => {
   const [email, setEmail] = useState("");
+
   const [password, setPassword] = useState("");
+  const user = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    signInWithEmailAndPassword(auth, email, password).catch((err) => {
-      console.log(err);
-    });
+    signInWithEmailAndPassword(auth, email, password)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
-
+  if (user) {
+    return <Navigate replace to="/" />;
+  }
   return (
     <>
       <h1>Login</h1>
